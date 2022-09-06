@@ -31,16 +31,17 @@ function Deck() {
 
   async function getCard() {
     // try {
-      const response = await axios.get(`${CARD_DECK_URL}${deck.id}/draw/?count=1`);
-      const randomCard = response.data.cards[0];
-      const remainingCards = response.data.remaining;
-      console.log("remaining cards:", remainingCards);
-      setDeck(deck => (
-        {
-          ...deck,
-          card: randomCard,
-          remaining: remainingCards
-        }));
+    const response = await axios.get(
+      `${CARD_DECK_URL}${deck.id}/draw/?count=1`);
+    const randomCard = response.data.cards[0];
+    const remainingCards = response.data.remaining;
+    console.log("remaining cards:", remainingCards);
+    setDeck(deck => (
+      {
+        ...deck,
+        card: randomCard,
+        remaining: remainingCards
+      }));
     // } catch (err) {
     //   setDeck(deck => (
     //     {
@@ -50,16 +51,32 @@ function Deck() {
     //   // console.log("no more cards")
     // }
   }
-  if (deck.remaining === 0){
+
+  async function shuffleDeck() {
+    await axios.get(`${CARD_DECK_URL}${deck.id}/shuffle`);
+    console.log("SHUFFLING")
+    setDeck(deck => (
+      {
+        ...deck,
+        card: "",
+        isLoading: false
+      }));
+  }
+
+
+
+  if (deck.remaining === 0) {
     return (
       alert("No More Cards")
       // <h1>No More Cards</h1>
-    )
+    );
   }
 
   return (
     <div>
-      <button onClick={getCard}>Get Card Using handler</button>
+      <button onClick={getCard}>Get Card</button>
+      <button disabled={deck.isLoading ? true : false}
+        onClick={shuffleDeck}>Shuffle Card</button>
       <img src={deck.card.image} alt={deck.card.code} />
     </div>
   );

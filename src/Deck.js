@@ -5,13 +5,11 @@ const CARD_DECK_URL = "https://deckofcardsapi.com/api/deck/";
 
 
 function Deck() {
-
   const [deck, setDeck] = useState({
     id: "",
     card: "",
     isLoading: true,
-    remaining: "",
-    error: null
+    remaining: ""
   });
 
   useEffect(function getDeckIdWhenMounted() {
@@ -26,12 +24,13 @@ function Deck() {
         remaining: remainingCards
       });
     }
+
     getDeckId();
   }, []);
 
 
   async function getCard() {
-    try {
+    // try {
       const response = await axios.get(`${CARD_DECK_URL}${deck.id}/draw/?count=1`);
       const randomCard = response.data.cards[0];
       const remainingCards = response.data.remaining;
@@ -42,21 +41,19 @@ function Deck() {
           card: randomCard,
           remaining: remainingCards
         }));
-    } catch (err) {
-      setDeck(deck => (
-        {
-          ...deck,
-          error: err
-        }));
-      console.log("no more cards")
-    }
+    // } catch (err) {
+    //   setDeck(deck => (
+    //     {
+    //       ...deck,
+    //       error: err
+    //     }));
+    //   // console.log("no more cards")
+    // }
   }
-  if (deck.remaining === 1){
-    console.log("error", deck.error)
+  if (deck.remaining === 0){
     return (
-
-      <h1>No More Cards</h1>
-
+      alert("No More Cards")
+      // <h1>No More Cards</h1>
     )
   }
 
